@@ -8,6 +8,7 @@ const https = require("https");
 const app = express();
 
 app.use(express.static("public"));
+app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.get("/", function(req, res) {
@@ -36,15 +37,19 @@ app.post("/", function(req, res) {
     };
 
     const jsonData = JSON.stringify(data);
+    
+    console.log(req.body)
 
     const url = "https://us17.api.mailchimp.com/3.0/lists/66865345ab";
 
     const options = {
         method: "POST",
-        auth: "Criss1:41e26076cdd0ec0db37bfe24394a0947-us17"
+        auth: "Criss1:795a9ed8f437f267a25360e921160f32-us17"
     }
 
     const request = https.request(url, options, function(response) {
+
+        console.log('status code: ' + response.statusCode);
         
         if (response.statusCode === 200) {
             res.sendFile(__dirname + "/success.html");
@@ -52,9 +57,9 @@ app.post("/", function(req, res) {
             res.sendFile(__dirname + "/failure.html");
         }
         
-        response.on("data", function(data){
-            console.log(JSON.parse(data));
-        })
+        // response.on("data", function(data){
+        //     console.log(JSON.parse(data));
+        // })
     })
 
     request.write(jsonData);
